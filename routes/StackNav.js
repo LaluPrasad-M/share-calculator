@@ -20,7 +20,7 @@ const headerTintColor = "#777777";
 export const AddBillItemsStackScreen = ({ navigation }) => (
   <EditMembersStack.Navigator>
     <EditMembersStack.Screen
-      name="Edit Members"
+      name="Add Bill Items"
       component={AddBillItemsScreen}
       options={{
         headerShown: false,
@@ -44,7 +44,7 @@ export const EditMembersStackScreen = ({ navigation }) => (
 export const PerPersonOrderStackScreen = ({ navigation }) => (
   <EditMembersStack.Navigator>
     <EditMembersStack.Screen
-      name="Edit Members"
+      name="per Person Order"
       component={PerPersonOrderScreen}
       options={{
         headerShown: false,
@@ -56,7 +56,7 @@ export const PerPersonOrderStackScreen = ({ navigation }) => (
 export const CommonOrderStackScreen = ({ navigation }) => (
   <EditMembersStack.Navigator>
     <EditMembersStack.Screen
-      name="Edit Members"
+      name="Common Order"
       component={CommonOrderScreen}
       options={{
         headerShown: false,
@@ -68,7 +68,7 @@ export const CommonOrderStackScreen = ({ navigation }) => (
 export const CalculateShareStackScreen = ({ navigation }) => (
   <EditMembersStack.Navigator>
     <EditMembersStack.Screen
-      name="Edit Members"
+      name="Calculate Share" 
       component={CalculateShareScreen}
       options={{
         headerShown: false,
