@@ -3779,7 +3779,7 @@
     "locate-path" "^6.0.0"
     "path-exists" "^4.0.0"
 
-"firebase@^8.10.0":
+"firebase@^8.2.3":
   "integrity" "sha512-GCABTbJdo88QgzX5OH/vsfKBWvTRbLUylGlYXtO7uYo1VErfGd2BWW9ATlJP5Gxx+ClDfyvVTvcs2rcNWn3uUA=="
   "resolved" "https://registry.npmjs.org/firebase/-/firebase-8.10.0.tgz"
   "version" "8.10.0"
@@ -5723,7 +5723,7 @@
     "color" "^3.1.2"
     "react-native-iphone-x-helper" "^1.3.1"
 
-"react-native-reanimated@^2.2.2", "react-native-reanimated@>= 1.0.0":
+"react-native-reanimated@^2.1.0", "react-native-reanimated@>= 1.0.0":
   "integrity" "sha512-Lfv4ogbNLU9x3DqhXUFza9pnzyTvPrw5xGC1wWA6aGXqZgyaikNLgC5dNWzxVbfEwRdOuLPFsai3LAcIM92TCg=="
   "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-2.2.2.tgz"
   "version" "2.2.2"
