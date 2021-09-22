@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,72 +12,133 @@ import {
 import firebase from "firebase";
 
 export default function AddBillItemsScreen({ navigation }) {
-  const [inputs, setInputs] = useState([{ key: "", name: "", price: "" }]);
+  const [billItems, setBillItems] = useState([
+    { key: "", name: "", price: "" },
+  ]);
+  const [members, setMembers] = useState([{ key: "", name: "" }]);
 
-  const addHandler = () => {
-    const _inputs = [...inputs];
-    _inputs.push({ key: "", name: "", price: "" });
-    setInputs(_inputs);
+  const commonBillDataFB = firebase.database().ref("commonBillData");
+  const commonOrderMembersFB = firebase.database().ref("commonOrderMembers");
+
+  const addBillItemHandler = () => {
+    const _billItems = [...billItems];
+    _billItems.push({ key: "", name: "", price: "" });
+    setBillItems(_billItems);
   };
 
-  const deleteHandler = (key) => {
-    const _inputs = inputs.filter((input, index) => index != key);
-    setInputs(_inputs);
+  const deleteBillItemHandler = (key) => {
+    const _billItems = billItems.filter((input, index) => index != key);
+    setBillItems(_billItems);
   };
 
   const ItemNameChangeHandler = (name, key) => {
-    const _inputs = [...inputs];
-    _inputs[key].key = key;
-    _inputs[key].name = name;
-    setInputs(_inputs);
+    const _billItems = [...billItems];
+    _billItems[key].key = key;
+    _billItems[key].name = name;
+    setBillItems(_billItems);
   };
 
   const ItemPriceChangeHandler = (price, key) => {
-    const _inputs = [...inputs];
-    _inputs[key].key = key;
-    _inputs[key].price = price;
-    setInputs(_inputs);
+    const _billItems = [...billItems];
+    _billItems[key].key = key;
+    _billItems[key].price = price;
+    setBillItems(_billItems);
+  };
+
+  const addMemberHandler = () => {
+    const _members = [...members];
+    _members.push({ key: "", name: "" });
+    setMembers(_members);
+  };
+
+  const deleteMemberHandler = (key) => {
+    const _members = members.filter((input, index) => index != key);
+    setMembers(_members);
+  };
+  const memberNameChangeHandler = (name, key) => {
+    const _members = [...members];
+    _members[key].key = key;
+    _members[key].name = name;
+    setMembers(_members);
   };
 
   const SubmitHandler = () => {
-    const BillData = firebase.database().ref("BillData");
-    BillData.set(inputs);
-    navigation.navigate("Edit Members");
+    commonBillDataFB.set(billItems);
+    commonOrderMembersFB.set(members)
+    navigation.navigate("Calculate Share");
   };
+
+  React.useEffect(() => {
+    commonBillDataFB.on("value", (dataSnap) => {
+      var dataSnapVal = dataSnap.val();
+      if (dataSnapVal) {
+        setBillItems(Object.values(dataSnapVal));
+      }
+    });
+    commonOrderMembersFB.on("value", (dataSnap) => {
+      var dataSnapVal = dataSnap.val();
+      if (dataSnapVal) {
+        setMembers(Object.values(dataSnapVal));
+      }
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.inputsContainer}>
-        {inputs.map((input, key) => (
-          <View style={styles.inputRow}>
-            <TextInput
-              style={styles.input}
-              onChangeText={(name) => {
-                ItemNameChangeHandler(name, key);
+      <ScrollView style={styles.billItemsContainer}>
+        <View>
+          {billItems.map((input, key) => (
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.input}
+                onChangeText={(name) => {
+                  ItemNameChangeHandler(name, key);
+                }}
+                placeholder="Item Name"
+                value={input.name}
+              />
+              <TextInput
+                style={styles.input}
+                onChangeText={(price) => {
+                  ItemPriceChangeHandler(price, key);
+                }}
+                placeholder="Price"
+                value={input.price}
+              />
+              <TouchableOpacity onPress={() => deleteBillItemHandler(key)}>
+                <Text style={{ color: "red", fontSize: 13 }}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+          <Button title="Add" onPress={addBillItemHandler} />
+        </View>
+        <View style={styles.container}>
+          <ScrollView style={styles.inputsContainer}>
+            {members.map((input, key) => (
+              <View style={styles.inputRow}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(name) => {
+                    memberNameChangeHandler(name, key);
+                  }}
+                  placeholder="Item Name"
+                  value={input.name}
+                />
+                <TouchableOpacity onPress={() => deleteMemberHandler(key)}>
+                  <Text style={{ color: "red", fontSize: 13 }}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+            <Button title="Add" onPress={addMemberHandler} />
+            <Button
+              onPress={() => {
+                SubmitHandler();
               }}
-              placeholder="Item Name"
-              value={input.name}
+              title="Submit Data"
+              color="#841584"
             />
-            <TextInput
-              style={styles.input}
-              onChangeText={(price) => {
-                ItemPriceChangeHandler(price, key);
-              }}
-              placeholder="Price"
-              value={input.price}
-            />
-            <TouchableOpacity onPress={() => deleteHandler(key)}>
-              <Text style={{ color: "red", fontSize: 13 }}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-        <Button title="Add" onPress={addHandler} />
-        <Button
-          onPress={() => {
-            SubmitHandler();
-          }}
-          title="Submit Data"
-          color="#841584"
-        />
+          </ScrollView>
+        </View>
       </ScrollView>
     </View>
   );
@@ -100,7 +161,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
   },
-  inputsContainer: {
+  billItemsContainer: {
     flex: 1,
     marginBottom: 20,
   },

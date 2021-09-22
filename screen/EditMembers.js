@@ -12,11 +12,13 @@ import {
 import firebase from "firebase";
 
 export default function AddBillItemsScreen({ navigation }) {
-  const [inputs, setInputs] = useState([{ key: "", name: ""}]);
+  const [inputs, setInputs] = useState([{ key: "", name: "" }]);
+  const membersFB = firebase.database().ref("members");
+  const commonOrderMembersFB = firebase.database().ref("commonOrderMembers");
 
   const addHandler = () => {
     const _inputs = [...inputs];
-    _inputs.push({ key: "", name: ""});
+    _inputs.push({ key: "", name: "" });
     setInputs(_inputs);
   };
 
@@ -34,11 +36,36 @@ export default function AddBillItemsScreen({ navigation }) {
 
   const SubmitHandler = () => {
     let _inputs = [...inputs];
-    _inputs = _inputs.filter(word => word.name.length > 2)
-    const BillData = firebase.database().ref("members");
-    BillData.set(_inputs);
+    _inputs = _inputs.filter((word) => word.name.length > 2);
+    membersFB.set(_inputs);
+
+    var commonMembers = [];
+    commonOrderMembersFB.on("value", (dataSnap) => {
+      commonMembers = dataSnap.val();
+      commonMembers = commonMembers ? Object.values(commonMembers) : [];
+    });
+
+    var members = [..._inputs, ...commonMembers];
+
+    members = members.map((member) => member.name);
+    members = members.filter((member, index) => {
+      return members.indexOf(member) == index;
+    });
+    members = members.map((member, index) => ({ key: index, name: member }));
+
+    commonOrderMembersFB.set(members);
+
     navigation.navigate("per Person Order");
   };
+
+  React.useEffect(() => {
+    membersFB.on("value", (dataSnap) => {
+      var dataSnapVal = dataSnap.val();
+      if (dataSnapVal) {
+        setInputs(Object.values(dataSnapVal));
+      }
+    });
+  }, []);
   return (
     <View style={styles.container}>
       <ScrollView style={styles.inputsContainer}>

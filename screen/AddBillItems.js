@@ -13,6 +13,7 @@ import firebase from "firebase";
 
 export default function AddBillItemsScreen({ navigation }) {
   const [inputs, setInputs] = useState([{ key: "", name: "", price: "" }]);
+  const BillData = firebase.database().ref("BillData");
 
   const addHandler = () => {
     const _inputs = [...inputs];
@@ -42,10 +43,18 @@ export default function AddBillItemsScreen({ navigation }) {
   const SubmitHandler = () => {
     let _inputs = [...inputs];
     _inputs = _inputs.filter(item => item.name.length > 1 && item.price.length > 0)
-    const BillData = firebase.database().ref("BillData");
     BillData.set(_inputs);
     navigation.navigate("Edit Members");
   };
+
+  React.useEffect(() => {
+    BillData.on("value", dataSnap => {
+      var dataSnapVal = dataSnap.val();
+      if(dataSnapVal){
+        setInputs(Object.values(dataSnapVal));
+      }
+    });
+  },[]);
   return (
     <View style={styles.container}>
       <ScrollView style={styles.inputsContainer}>
