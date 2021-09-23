@@ -12,12 +12,12 @@ import {
 import firebase from "firebase";
 
 export default function AddBillItemsScreen({ navigation }) {
-  const [inputs, setInputs] = useState([{ key: "", name: "", price: "" }]);
-  const BillData = firebase.database().ref("BillData");
+  const [inputs, setInputs] = useState([{ key: "", name: "", price: "", quantity:1 }]);
+  const individualBillDataFB = firebase.database().ref("individualBillData");
 
   const addHandler = () => {
     const _inputs = [...inputs];
-    _inputs.push({ key: "", name: "", price: "" });
+    _inputs.push({ key: "", name: "", price: "" ,quantity:1});
     setInputs(_inputs);
   };
 
@@ -40,15 +40,23 @@ export default function AddBillItemsScreen({ navigation }) {
     setInputs(_inputs);
   };
 
+
+  const ItemQuantityChangeHandler = (quantity, key) => {
+    const _inputs = [...inputs];
+    _inputs[key].key = key;
+    _inputs[key].quantity = quantity;
+    setInputs(_inputs);
+  };
+
   const SubmitHandler = () => {
     let _inputs = [...inputs];
     _inputs = _inputs.filter(item => item.name.length > 1 && item.price.length > 0)
-    BillData.set(_inputs);
+    individualBillDataFB.set(_inputs);
     navigation.navigate("Edit Members");
   };
 
   React.useEffect(() => {
-    BillData.on("value", dataSnap => {
+    individualBillDataFB.on("value", dataSnap => {
       var dataSnapVal = dataSnap.val();
       if(dataSnapVal){
         setInputs(Object.values(dataSnapVal));
@@ -75,6 +83,14 @@ export default function AddBillItemsScreen({ navigation }) {
               }}
               placeholder="Price"
               value={input.price}
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(quantity) => {
+                ItemQuantityChangeHandler(quantity, key);
+              }}
+              placeholder="Quantity"
+              value={input.quantity}
             />
             <TouchableOpacity onPress={() => deleteHandler(key)}>
               <Text style={{ color: "red", fontSize: 13 }}>Delete</Text>

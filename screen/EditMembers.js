@@ -45,7 +45,7 @@ export default function AddBillItemsScreen({ navigation }) {
       commonMembers = commonMembers ? Object.values(commonMembers) : [];
     });
 
-    var members = [..._inputs, ...commonMembers];
+    var members = [...commonMembers, ..._inputs];
 
     members = members.map((member) => member.name);
     members = members.filter((member, index) => {

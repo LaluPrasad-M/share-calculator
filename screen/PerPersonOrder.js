@@ -8,7 +8,6 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-
 import firebase from "firebase";
 
 export default function AddBillItemsScreen({ navigation }) {
@@ -85,7 +84,7 @@ export default function AddBillItemsScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.billItemsContainer}>
-        <View>
+        {/* <View>
           {billItems.map((input, key) => (
             <View style={styles.inputRow}>
               <TextInput
@@ -137,7 +136,8 @@ export default function AddBillItemsScreen({ navigation }) {
               color="#841584"
             />
           </ScrollView>
-        </View>
+        </View> */}
+
       </ScrollView>
     </View>
   );
